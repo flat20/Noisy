@@ -16,21 +16,24 @@
 	 		canvas.width = canvas.height = options.size;
 	 		var imgData = ctx.createImageData(canvas.width, canvas.height);
 	 		
-	 		var rand = function(min, max) {
-	 			return Math.floor(Math.random()*(max-min)+min);
+                        var rand = function(max) {
+	 			return Math.floor(Math.random()*max);
 	 		};
-	 		
+
+                        var numPixels = options.intensity * Math.pow(options.size, 2);
+                        var maxAlpha = 255 * options.opacity;
+
 	 		// Add pixels at random positions to the canvas
-	 		for (var i = 0; i < options.intensity * Math.pow(options.size, 2); i++) {
-	 			var x = rand(0, canvas.width),
-	 			    y = rand(0, canvas.height),
+	 		for (var i = 0; i < numPixels; i++) {
+	 			var x = rand(canvas.width),
+	 			    y = rand(canvas.height),
 	 			    index = (x + y * imgData.width) * 4;
 	 			
-	 			var randColorChannel = rand(0, 255);
-	 			imgData.data[index  ] = randColorChannel;                                           // red
-	 			imgData.data[index+1] = options.monochrome ? randColorChannel : rand(0, 255);       // green
-	 			imgData.data[index+2] = options.monochrome ? randColorChannel : rand(0, 255);       // blue
-	 			imgData.data[index+3] = rand(0, 255 * options.opacity);                             // alpha
+	 			var randColorChannel = rand(255);
+	 			imgData.data[index  ] = randColorChannel;                                                            // red
+	 			imgData.data[index+1] = options.monochrome ? randColorChannel : rand(255);       // green
+	 			imgData.data[index+2] = options.monochrome ? randColorChannel : rand(255);       // blue
+	 			imgData.data[index+3] = rand(maxAlpha);                                                            // alpha
 	 		}
 	 		ctx.putImageData(imgData, 0, 0);
 	 		$(this).css('background-image', 'url(' + canvas.toDataURL('image/png') + ')');
